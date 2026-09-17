@@ -143,6 +143,9 @@ Raw fixture sources:
 
 ## Automated Media Pipeline (Demo Video)
 
+[![Watch Corda Demo Video](https://corda-vert.vercel.app/assets/video/poster.jpg)](https://corda-vert.vercel.app/assets/video/demo.mp4)
+*Click the preview card above to stream the full 1080p narrated demonstration video.*
+
 Corda includes a fully automated, script-driven video production pipeline with zero manual narration editing:
 
 * **Narration Engine**: ElevenLabs Speech Synthesis (`eleven_multilingual_v2`)
@@ -152,10 +155,10 @@ Corda includes a fully automated, script-driven video production pipeline with z
   * Frames Rendered: 2,486 frames
   * Visual Elements: Dynamic HUD grid, live on-chain contract cards, proportional subtitles, audio waveform visualization.
 * **Audio-Visual Sync**: Duration delta is within 0.05 seconds ($\le 1.5$ frames).
-* **Direct Assets**:
-  * [Live Video Stream](https://corda-vert.vercel.app/assets/video/demo.mp4)
-  * [Repository Video MP4](./Corda/Corda-demo-final.mp4)
-  * [Automated QA Report](./docs/VIDEO_QA.md)
+* **Direct Video Links**:
+  * 🌐 **[Live Web Stream (1080p Full HD)](https://corda-vert.vercel.app/assets/video/demo.mp4)**
+  * 📦 **[GitHub Release Asset v1.0.0](https://github.com/Charles-ace/Corda/releases/download/v1.0.0/Corda-demo-final.mp4)**
+  * 📄 **[Automated QA Sync Report](./docs/VIDEO_QA.md)**
 
 ---
 
