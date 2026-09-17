@@ -7,10 +7,13 @@ Built for the **GenLayer Agent Tank Hackathon**.
 
 ---
 
-## On-Chain Verified Deployment (GenLayer Studionet)
+## Quick Links & On-Chain Verified Deployment (GenLayer Studionet)
 
 | Item | Value |
 | :--- | :--- |
+| **Live Web App** | [https://corda-vert.vercel.app](https://corda-vert.vercel.app) |
+| **Demo Video (1080p)** | [`Corda-demo-final.mp4`](./Corda-demo-final.mp4) ([Web Stream](https://corda-vert.vercel.app/assets/video/demo.mp4)) |
+| **Video QA & Sync Report** | [`docs/VIDEO_QA.md`](./docs/VIDEO_QA.md) |
 | **Network** | GenLayer Studionet (Chain ID `61999`) |
 | **Contract Address** | [`0x70c2F7491A2CC7f81AC05ca964a059c05feD3e92`](https://explorer-studio.genlayer.com/address/0x70c2F7491A2CC7f81AC05ca964a059c05feD3e92) |
 | **Deployment TX** | [`0xad4a52ec806c702aade32fcece1816b99c2dd0ad1625750ea70c803a5ca0690a`](https://explorer-studio.genlayer.com/tx/0xad4a52ec806c702aade32fcece1816b99c2dd0ad1625750ea70c803a5ca0690a) (`FINALIZED`) |
