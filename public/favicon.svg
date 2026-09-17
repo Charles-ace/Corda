@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="fav-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#68F09E"/>
+      <stop offset="40%" stop-color="#00D2FF"/>
+      <stop offset="80%" stop-color="#8356E2"/>
+      <stop offset="100%" stop-color="#E1F2B3"/>
+    </linearGradient>
+
+    <linearGradient id="fav-core" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#68F09E"/>
+      <stop offset="100%" stop-color="#FFFFFF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background Pill for High Contrast across all browser themes -->
+  <rect width="64" height="64" rx="16" fill="#070708"/>
+  <rect width="64" height="64" rx="16" fill="none" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5"/>
+
+  <!-- Scaled Optimized Mark -->
+  <g transform="translate(6, 6) scale(0.1015)">
+    <!-- Chord 'C' -->
+    <path d="M 370 120
+             C 280 60, 150 100, 100 190
+             C 55 270, 85 375, 175 425
+             C 255 470, 360 445, 395 385
+             C 405 368, 392 355, 375 358
+             C 335 365, 275 370, 215 345
+             C 150 318, 130 240, 165 185
+             C 200 130, 290 120, 350 148
+             C 368 156, 385 142, 370 120 Z"
+          fill="url(#fav-gradient)"/>
+
+    <!-- Nucleus -->
+    <circle cx="268" cy="256" r="48" fill="#0E0E10" stroke="url(#fav-gradient)" stroke-width="6"/>
+    <polygon points="268,224 300,256 268,288 236,256" fill="url(#fav-core)"/>
+    <circle cx="268" cy="256" r="12" fill="#070708"/>
+  </g>
+</svg>

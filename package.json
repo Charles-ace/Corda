@@ -1,0 +1,30 @@
+{
+  "name": "corda",
+  "version": "1.0.0",
+  "description": "Corda — Autonomous Privacy Disclosure Oracle on GenLayer Intelligent Contracts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "dev": "python Corda/server.py",
+    "start": "python Corda/server.py",
+    "test": "python Corda/test_probe.py",
+    "lint:contract": "genvm-lint lint Corda/contracts/Corda.py",
+    "video": "python Corda/scripts/run_video_pipeline.py",
+    "video:narration": "python Corda/scripts/generate_narration.py",
+    "video:render": "python Corda/scripts/render_video.py"
+  },
+  "keywords": [
+    "genlayer",
+    "intelligent-contract",
+    "oracle",
+    "privacy",
+    "consensus"
+  ],
+  "author": "Corda Team",
+  "license": "MIT",
+  "dependencies": {
+    "@elevenlabs/elevenlabs-js": "^2.68.0",
+    "genlayer-js": "^1.1.8"
+  }
+}

@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background subtle gradient -->
+    <radialGradient id="corda-bg-glow" cx="50%" cy="50%" r="50%" fx="30%" fy="30%">
+      <stop offset="0%" stop-color="#8356E2" stop-opacity="0.18"/>
+      <stop offset="60%" stop-color="#68F09E" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#070708" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Outer Chord Sweeping Gradient -->
+    <linearGradient id="chord-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#68F09E"/>
+      <stop offset="30%" stop-color="#00D2FF"/>
+      <stop offset="70%" stop-color="#8356E2"/>
+      <stop offset="100%" stop-color="#E1F2B3"/>
+    </linearGradient>
+
+    <!-- Core Nucleus Gradient -->
+    <linearGradient id="core-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#68F09E"/>
+      <stop offset="50%" stop-color="#E1F2B3"/>
+      <stop offset="100%" stop-color="#FFFFFF"/>
+    </linearGradient>
+
+    <!-- Shadow / Glow Filters -->
+    <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="core-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Ambient background glow -->
+  <circle cx="256" cy="256" r="240" fill="url(#corda-bg-glow)"/>
+
+  <!-- Outer Orbital Reference Rings (Precision Architecture) -->
+  <circle cx="256" cy="256" r="210" fill="none" stroke="rgba(255, 255, 255, 0.05)" stroke-width="1.5" stroke-dasharray="4 8"/>
+  <circle cx="256" cy="256" r="160" fill="none" stroke="rgba(104, 240, 158, 0.1)" stroke-width="1.5"/>
+
+  <!-- Geodetic Axis Markers -->
+  <line x1="256" y1="36" x2="256" y2="56" stroke="#68F09E" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  <line x1="256" y1="456" x2="256" y2="476" stroke="#8356E2" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  <line x1="36" y1="256" x2="56" y2="256" stroke="#00D2FF" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  <line x1="456" y1="256" x2="476" y2="256" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- THE CORDA CHORD (Stylized 'C' Monogram with Golden Ratio Curvature) -->
+  <!-- Main dynamic tapered chord -->
+  <path d="M 370 120
+           C 280 60, 150 100, 100 190
+           C 55 270, 85 375, 175 425
+           C 255 470, 360 445, 395 385
+           C 405 368, 392 355, 375 358
+           C 335 365, 275 370, 215 345
+           C 150 318, 130 240, 165 185
+           C 200 130, 290 120, 350 148
+           C 368 156, 385 142, 370 120 Z"
+        fill="#FFFFFF"
+        filter="url(#neon-glow)"/>
+
+  <!-- Inner Concentric Resonance Arc -->
+  <path d="M 320 180
+           C 260 145, 185 170, 160 230
+           C 135 290, 165 350, 225 370
+           C 270 385, 320 370, 340 335"
+        fill="none"
+        stroke="#FFFFFF"
+        stroke-width="3"
+        stroke-linecap="round"
+        stroke-dasharray="12 8"
+        opacity="0.75"/>
+
+  <!-- THE ORACLE EYE (Central Consensus Nucleus) -->
+  <!-- Outer Nucleus Ring -->
+  <circle cx="268" cy="256" r="46" fill="#0E0E10" stroke="#FFFFFF" stroke-width="3"/>
+
+  <!-- Rhombus / Faceted Consensus Gem -->
+  <polygon points="268,226 298,256 268,286 238,256"
+           fill="#FFFFFF"
+           filter="url(#core-glow)"/>
+
+  <!-- Central Pupil / Lens of Truth -->
+  <circle cx="268" cy="256" r="12" fill="#070708"/>
+  <circle cx="272" cy="252" r="3.5" fill="#FFFFFF"/>
+</svg>

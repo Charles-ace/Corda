@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="h-chord-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#68F09E"/>
+      <stop offset="30%" stop-color="#00D2FF"/>
+      <stop offset="70%" stop-color="#8356E2"/>
+      <stop offset="100%" stop-color="#E1F2B3"/>
+    </linearGradient>
+
+    <linearGradient id="h-core-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#68F09E"/>
+      <stop offset="100%" stop-color="#FFFFFF"/>
+    </linearGradient>
+
+    <filter id="h-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- LEFT: LOGOMARK EMBLEM (Scaled to 150x150, centered at x=100, y=100) -->
+  <g transform="translate(15, 15) scale(0.332)">
+    <!-- Outer Arc -->
+    <path d="M 370 120
+             C 280 60, 150 100, 100 190
+             C 55 270, 85 375, 175 425
+             C 255 470, 360 445, 395 385
+             C 405 368, 392 355, 375 358
+             C 335 365, 275 370, 215 345
+             C 150 318, 130 240, 165 185
+             C 200 130, 290 120, 350 148
+             C 368 156, 385 142, 370 120 Z"
+          fill="url(#h-chord-gradient)"
+          filter="url(#h-glow)"/>
+
+    <!-- Inner Orbit -->
+    <path d="M 320 180 C 260 145, 185 170, 160 230 C 135 290, 165 350, 225 370 C 270 385, 320 370, 340 335"
+          fill="none" stroke="#E1F2B3" stroke-width="3" stroke-linecap="round" stroke-dasharray="12 8" opacity="0.75"/>
+
+    <!-- Nucleus -->
+    <circle cx="268" cy="256" r="46" fill="#0E0E10" stroke="url(#h-chord-gradient)" stroke-width="3"/>
+    <polygon points="268,226 298,256 268,286 238,256" fill="url(#h-core-gradient)"/>
+    <circle cx="268" cy="256" r="12" fill="#070708"/>
+    <circle cx="272" cy="252" r="3.5" fill="#FFFFFF"/>
+  </g>
+
+  <!-- RIGHT: BESPOKE TYPOGRAPHY -->
+  <g transform="translate(210, 0)">
+    <!-- Wordmark: CORDA -->
+    <text x="0" y="112"
+          font-family="system-ui, -apple-system, 'Space Grotesk', 'Syne', sans-serif"
+          font-size="82"
+          font-weight="900"
+          letter-spacing="0.06em"
+          fill="#FFFFFF">
+      CORDA
+    </text>
+
+    <!-- GenLayer Live Badge -->
+    <g transform="translate(380, 58)">
+      <rect x="0" y="0" width="170" height="28" rx="14" fill="rgba(104, 240, 158, 0.12)" stroke="rgba(104, 240, 158, 0.35)" stroke-width="1"/>
+      <circle cx="14" cy="14" r="4" fill="#68F09E"/>
+      <text x="26" y="18" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="700" letter-spacing="0.08em" fill="#68F09E">
+        GENLAYER ORACLE
+      </text>
+    </g>
+
+    <!-- Subtitle / Mission Tagline -->
+    <text x="4" y="152"
+          font-family="'JetBrains Mono', monospace"
+          font-size="13"
+          font-weight="500"
+          letter-spacing="0.22em"
+          fill="#9A9A9A">
+      AUTONOMOUS PRIVACY DISCLOSURE PROTOCOL
+    </text>
+  </g>
+</svg>

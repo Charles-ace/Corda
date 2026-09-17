@@ -1,0 +1,16 @@
+{
+  "name": "corda-app",
+  "version": "1.0.0",
+  "description": "Corda — Autonomous Privacy Disclosure Oracle on GenLayer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node ../scripts/build.js",
+    "dev": "python server.py",
+    "start": "python server.py",
+    "test": "python test_probe.py",
+    "video": "python scripts/run_video_pipeline.py",
+    "video:narration": "python scripts/generate_narration.py",
+    "video:render": "python scripts/render_video.py"
+  }
+}

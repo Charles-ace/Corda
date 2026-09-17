@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Corda — Privacy Claims vs. Public Code | GenLayer Intelligent Contract</title>
+  <meta name="description" content="The decentralized disclosure oracle verifying whether open-source AI frameworks live up to their public privacy claims on GenLayer."/>
+
+  <!-- Favicons & App Icons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
+  <link rel="shortcut icon" href="/favicon.ico"/>
+  <meta name="theme-color" content="#070708"/>
+
+  <!-- Fonts: Syne (Klapt display), Space Grotesk, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@600;700;800&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'primary-black': '#070708',
+            'secondary-black': '#0E0E10',
+            'surface-dark': '#131316',
+            'secondary-purple': '#8356E2',
+            'thirtiary-yellow': '#E1F2B3',
+            'accent-green': '#68F09E',
+            'text-light': '#FFFFFF',
+            'text-dark': '#9A9A9A',
+            'border-dark': '#242428',
+          },
+          fontFamily: {
+            'display': ['Syne', 'Space Grotesk', '-apple-system', 'sans-serif'],
+            'grotesk': ['Space Grotesk', 'Syne', 'sans-serif'],
+            'sans': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            'mono': ['JetBrains Mono', 'monospace'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #070708;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #242428;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #8356E2;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: flex;
+      width: 200%;
+      animation: marquee 28s linear infinite;
+    }
+    .animate-marquee:hover {
+      animation-play-state: paused;
+    }
+
+    /* Expanding Pill Button transition */
+    .nesa-pill-btn .pill-circle {
+      transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
+    }
+    .nesa-pill-btn:hover .pill-circle {
+      width: calc(100% - 10px);
+    }
+    .nesa-pill-btn:hover .pill-text {
+      color: #000000 !important;
+    }
+    .nesa-pill-btn-dark:hover .pill-text {
+      color: #ffffff !important;
+    }
+  </style>
+</head>
+<body class="bg-primary-black text-text-light font-sans antialiased overflow-x-hidden selection:bg-secondary-purple selection:text-white">
+
+  <!-- ========================================================================= -->
+  <!-- NAVIGATION BAR (Sparse with 2-3 links + Console button)                   -->
+  <!-- ========================================================================= -->
+  <nav id="site-navbar" class="fixed top-0 left-0 right-0 z-[100] transition-all duration-500 bg-primary-black/60 backdrop-blur-xl border-b border-white/5">
+    <div class="max-w-screen-2xl mx-auto px-5 sm:px-8 lg:px-14 py-4 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#" onclick="showView('marketing'); return false;" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-surface-dark border border-white/10 flex items-center justify-center group-hover:border-accent-green/50 transition-all duration-300 overflow-hidden p-1.5 shadow-lg shadow-black/60">
+          <img src="/assets/branding/logo.svg" alt="Corda Logo" class="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-300"/>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-display font-extrabold text-xl tracking-tight text-white uppercase leading-none group-hover:text-accent-green transition-colors">CORDA</span>
+          <span class="font-mono text-[9px] text-text-dark tracking-widest uppercase mt-0.5">GenLayer Oracle</span>
+        </div>
+      </a>
+
+      <!-- Center & Right Navigation (Sparse: 3 links + Console) -->
+      <div class="flex items-center gap-6 lg:gap-8">
+        
+        <div class="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide">
+          <a href="#architecture" onclick="if(currentView!=='marketing') showView('marketing');" class="text-text-dark hover:text-white transition-colors">Architecture</a>
+          <a href="#evidence" onclick="if(currentView!=='marketing') showView('marketing');" class="text-text-dark hover:text-white transition-colors">Verified Proofs</a>
+          <button onclick="toggleModal('docs-modal', true)" class="text-text-dark hover:text-white transition-colors">Docs</button>
+        </div>
+
+        <!-- Signature Expanding Pill CTA Button (Console Sub-Page) -->
+        <button onclick="showView('console')" id="nav-console-btn" class="nesa-pill-btn group relative inline-flex items-center rounded-full h-[46px] lg:h-[50px] py-[6px] pl-[50px] lg:pl-[54px] pr-[22px] lg:pr-[26px] bg-secondary-black border border-white/10 hover:border-white/30 overflow-hidden cursor-pointer shadow-lg shadow-black/40">
+          <div class="pill-circle absolute top-[5px] left-[5px] w-[36px] h-[36px] lg:w-[40px] lg:h-[40px] rounded-full bg-thirtiary-yellow flex items-center justify-center z-[1]">
+            <svg class="w-4 h-4 text-black transform group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span class="pill-text relative z-[2] font-display font-bold uppercase text-xs lg:text-sm tracking-wider text-white transition-colors duration-300">
+            Console
+          </span>
+        </button>
+
+        <!-- Hamburger Icon for Fullscreen Curtain -->
+        <button onclick="toggleCurtain(true)" aria-label="Open Menu" class="relative flex flex-col justify-center items-center w-10 h-10 rounded-full border border-white/10 hover:border-white/30 transition-all text-white">
+          <div class="w-4 h-0.5 bg-white mb-1.5 transition-all"></div>
+          <div class="w-4 h-0.5 bg-white transition-all"></div>
+        </button>
+
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========================================================================= -->
+  <!-- FULL-SCREEN MENU CURTAIN (Nesa signature Acid Yellow #E1F2B3)            -->
+  <!-- ========================================================================= -->
+  <div id="curtain-menu" class="fixed inset-0 z-[200] bg-thirtiary-yellow text-primary-black transform -translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between p-8 sm:p-14 lg:p-20 overflow-y-auto">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-black/10 flex items-center justify-center p-1.5 overflow-hidden">
+          <img src="/assets/branding/logo-dark.svg" alt="Corda Logo" class="w-full h-full object-contain"/>
+        </div>
+        <span class="font-display font-extrabold text-2xl uppercase tracking-tight">CORDA</span>
+      </div>
+      <button onclick="toggleCurtain(false)" aria-label="Close Menu" class="w-12 h-12 rounded-full bg-black/10 hover:bg-black/20 flex items-center justify-center text-black font-bold text-xl transition-colors">
+        ✕
+      </button>
+    </div>
+
+    <div class="py-12 flex flex-col gap-4 sm:gap-6">
+      <a href="#" onclick="toggleCurtain(false); showView('console'); return false;" class="font-display font-black text-4xl sm:text-6xl lg:text-8xl uppercase tracking-tighter hover:line-through transition-all">
+        PLAYGROUND / CONSOLE
+      </a>
+      <a href="#architecture" onclick="toggleCurtain(false); showView('marketing');" class="font-display font-black text-4xl sm:text-6xl lg:text-8xl uppercase tracking-tighter hover:line-through transition-all">
+        ARCHITECTURE
+      </a>
+      <a href="#evidence" onclick="toggleCurtain(false); showView('marketing');" class="font-display font-black text-4xl sm:text-6xl lg:text-8xl uppercase tracking-tighter hover:line-through transition-all">
+        EVIDENCE & PROOFS
+      </a>
+      <button onclick="toggleCurtain(false); toggleModal('docs-modal', true);" class="text-left font-display font-black text-4xl sm:text-6xl lg:text-8xl uppercase tracking-tighter hover:line-through transition-all">
+        DOCUMENTATION
+      </button>
+      <a target="_blank" href="https://explorer-studio.genlayer.com/address/0x70c2F7491A2CC7f81AC05ca964a059c05feD3e92" class="font-display font-black text-4xl sm:text-6xl lg:text-8xl uppercase tracking-tighter hover:line-through transition-all text-black/70">
+        STUDIONET EXPLORER ↗
+      </a>
+    </div>
+
+    <div class="border-t border-black/15 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs font-mono uppercase tracking-widest text-black/80">
+      <div>Autonomous Disclosure Oracle on GenLayer</div>
+      <div>Contract: 0x70c2F7491A2CC7f81AC05ca964a059c05feD3e92</div>
+      <div>Chain ID: 61999 (Studionet)</div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- VIEW 1: MARKETING PAGE (1:1 Nesa Layout & Aesthetic Clone)                -->
+  <!-- ========================================================================= -->
+  <div id="view-marketing" class="w-full">
+
+    <!-- SECTION 1: HERO SECTION -->
+    <section class="relative min-h-screen flex flex-col justify-end pt-32 pb-16 lg:pb-24 px-5 sm:px-8 lg:px-16 overflow-hidden">
+      
+      <!-- Video Backdrop (mix-blend-screen streaming Nesa's exact morphing mesh) -->
+      <video id="hero-video" preload="auto" loop muted playsinline autoplay class="absolute inset-0 w-full h-full object-cover mix-blend-screen opacity-80 pointer-events-none z-0">
+        <source src="https://video.nesa.ai/hero_morph_final_2000.mp4" type="video/mp4"/>
+      </video>
+
+      <!-- Radial Ambient Gradient Fallback -->
+      <div class="absolute inset-0 bg-gradient-to-t from-primary-black via-transparent to-primary-black/80 pointer-events-none z-[1]"></div>
+
+      <!-- Hero Main Content Grid -->
+      <div class="relative z-10 max-w-screen-2xl mx-auto w-full flex flex-col lg:flex-row items-start lg:items-end justify-between gap-12 lg:gap-8">
+        
+        <!-- Left: Stacked Monumental Headline -->
+        <div class="max-w-4xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-text-dark mb-6">
+            <span class="w-2 h-2 rounded-full bg-accent-green animate-ping"></span>
+            <span>GENLAYER STUDIONET LIVE (CHAIN ID 61999)</span>
+          </div>
+
+          <h1 class="font-display font-black text-[13vw] sm:text-[9vw] lg:text-[6.5rem] leading-[0.92] tracking-[-0.03em] uppercase text-text-light flex flex-col">
+            <span>WITNESS</span>
+            <span class="text-white/90">THE REALITY</span>
+            <span class="text-white/80">OF PRIVACY CLAIMS</span>
+            <span class="text-secondary-purple">ON CHAIN</span>
+          </h1>
+
+          <!-- Hero Buttons -->
+          <div class="mt-8 sm:mt-10 flex flex-wrap items-center gap-4">
+            <!-- Expanding Pill: Audit a Framework -->
+            <button onclick="showView('console')" class="nesa-pill-btn group relative inline-flex items-center rounded-full h-[54px] lg:h-[60px] py-[6px] pl-[56px] lg:pl-[64px] pr-[26px] lg:pr-[32px] bg-secondary-black border border-white/15 hover:border-white/40 overflow-hidden cursor-pointer shadow-2xl">
+              <div class="pill-circle absolute top-[5px] left-[5px] w-[42px] h-[42px] lg:w-[48px] lg:h-[48px] rounded-full bg-secondary-purple flex items-center justify-center z-[1]">
+                <svg class="w-4 h-4 text-white transform -rotate-45 group-hover:rotate-0 transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+              <span class="pill-text relative z-[2] font-display font-bold uppercase text-sm lg:text-base tracking-wider text-white transition-colors duration-300">
+                Audit a Framework
+              </span>
+            </button>
+
+            <!-- Secondary Outline Button -->
+            <a href="#evidence" class="inline-flex items-center justify-center rounded-full h-[54px] lg:h-[60px] px-8 text-sm font-semibold uppercase tracking-wider text-text-light hover:text-white border border-white/10 hover:border-white/20 bg-white/5 backdrop-blur-sm transition-colors">
+              Explore Proofs
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Technical HUD Chamfered Corner-Bracket Card -->
+        <div class="w-full lg:max-w-md relative p-6 sm:p-8 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl">
+          <!-- Nesa 4 Corner Brackets -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" class="absolute top-[-1px] left-[-1px]"><path stroke="#9A9A9A" stroke-linejoin="round" d="M1 30V15a14 14 0 0 1 14-14h15"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" class="absolute top-[-1px] right-[-1px] rotate-90"><path stroke="#9A9A9A" stroke-linejoin="round" d="M1 30V15a14 14 0 0 1 14-14h15"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" class="absolute bottom-[-1px] left-[-1px] -rotate-90"><path stroke="#9A9A9A" stroke-linejoin="round" d="M1 30V15a14 14 0 0 1 14-14h15"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" class="absolute bottom-[-1px] right-[-1px] rotate-180"><path stroke="#9A9A9A" stroke-linejoin="round" d="M1 30V15a14 14 0 0 1 14-14h15"/></svg>
+
+          <div class="flex items-center justify-between mb-4">
+            <span class="font-mono text-xs text-secondary-purple font-semibold uppercase tracking-widest">Protocol Mission</span>
+            <span class="font-mono text-xs text-text-dark">01 / GENVM</span>
+          </div>
+          <p class="text-sm sm:text-base text-text-light/90 leading-relaxed font-light">
+            Broadcast trustworthy proofs on the GenLayer Intelligent Contract network. Verifying whether open-source AI frameworks live up to their public privacy claims.
+          </p>
+          <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono text-text-dark">
+            <span>Comparative Consensus</span>
+            <span class="text-accent-green font-bold">100% On-Chain</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 2: ELECTRIC PURPLE CARD -->
+    <section class="relative z-10 px-3 sm:px-6 lg:px-10 py-12">
+      <div class="max-w-screen-2xl mx-auto rounded-[32px] sm:rounded-[48px] lg:rounded-[5.5rem] bg-secondary-purple text-primary-black p-8 sm:p-14 lg:p-20 shadow-2xl overflow-hidden">
+        
+        <!-- Header Row -->
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 pb-14 border-b border-black/15">
+          <div class="max-w-3xl">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/10 border border-black/10 text-xs font-mono font-bold tracking-wider mb-6">
+              <span class="w-2 h-2 rounded-full bg-primary-black"></span>
+              <span>INTELLIGENT CONTRACT CONSENSUS</span>
+            </div>
+            <h2 class="font-display font-black text-4xl sm:text-6xl lg:text-7xl uppercase leading-[0.95] tracking-tight">
+              AUTONOMOUS<br/>DISCLOSURE AUDITING
+            </h2>
+            <p class="mt-6 text-lg sm:text-xl lg:text-2xl font-light text-black/85 max-w-2xl leading-relaxed">
+              Corda is the decentralized oracle bringing non-deterministic code analysis and public privacy verification directly into GenLayer Intelligent Contracts.
+            </p>
+          </div>
+
+          <!-- Quick Action inside Purple Card -->
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <button onclick="showView('console')" class="nesa-pill-btn nesa-pill-btn-dark group relative inline-flex items-center rounded-full h-[52px] py-[6px] pl-[54px] pr-[28px] bg-primary-black text-white overflow-hidden cursor-pointer">
+              <div class="pill-circle absolute top-[5px] left-[5px] w-[40px] h-[40px] rounded-full bg-white flex items-center justify-center z-[1]">
+                <svg class="w-4 h-4 text-black" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+              <span class="pill-text relative z-[2] font-display font-bold uppercase text-xs lg:text-sm tracking-wider text-white transition-colors duration-300">
+                Launch Console
+              </span>
+            </button>
+            <div class="flex items-center gap-2 px-4 py-3 rounded-full border border-black/20 text-xs font-mono font-bold">
+              <span class="w-2.5 h-2.5 rounded-full bg-accent-green"></span>
+              <span>Studionet Online</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 HUD Chamfered Metric Boxes -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 pt-12">
+          
+          <div class="relative p-6 sm:p-8 bg-black/5 rounded-2xl border border-black/10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute top-0 left-0"><path stroke="#000" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute top-0 right-0 rotate-90"><path stroke="#000" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute bottom-0 left-0 -rotate-90"><path stroke="#000" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute bottom-0 right-0 rotate-180"><path stroke="#000" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <span class="font-mono text-xs font-bold text-black/60">01</span>
+            <div class="font-display font-black text-5xl lg:text-6xl mt-2 mb-1">100%</div>
+            <div class="font-display font-bold uppercase text-sm tracking-wider">Comparative Consensus</div>
+            <p class="text-xs text-black/75 mt-2 leading-relaxed">Multi-validator agreement on LLM semantic evaluation via gl.eq_principle.</p>
+          </div>
+
+          <div class="relative p-6 sm:p-8 bg-black/5 rounded-2xl border border-black/10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute top-0 left-0"><path stroke="#000" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute top-0 right-0 rotate-90"><path stroke="#000" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute bottom-0 left-0 -rotate-90"><path stroke="#000" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute bottom-0 right-0 rotate-180"><path stroke="#000" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <span class="font-mono text-xs font-bold text-black/60">02</span>
+            <div class="font-display font-black text-5xl lg:text-6xl mt-2 mb-1">2</div>
+            <div class="font-display font-bold uppercase text-sm tracking-wider">Live On-Chain Cases</div>
+            <p class="text-xs text-black/75 mt-2 leading-relaxed">Finalized empirical executions: Case B (Mismatch) and Case A (Match).</p>
+          </div>
+
+          <div class="relative p-6 sm:p-8 bg-black/5 rounded-2xl border border-black/10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute top-0 left-0"><path stroke="#000" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute top-0 right-0 rotate-90"><path stroke="#000" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute bottom-0 left-0 -rotate-90"><path stroke="#000" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute bottom-0 right-0 rotate-180"><path stroke="#000" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <span class="font-mono text-xs font-bold text-black/60">03</span>
+            <div class="font-display font-black text-5xl lg:text-6xl mt-2 mb-1">0</div>
+            <div class="font-display font-bold uppercase text-sm tracking-wider">Gas / Wallet Barrier</div>
+            <p class="text-xs text-black/75 mt-2 leading-relaxed">Zero-wallet proof room architecture for seamless visitor verification.</p>
+          </div>
+
+          <div class="relative p-6 sm:p-8 bg-black/5 rounded-2xl border border-black/10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute top-0 left-0"><path stroke="#000" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute top-0 right-0 rotate-90"><path stroke="#000" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute bottom-0 left-0 -rotate-90"><path stroke="#000" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute bottom-0 right-0 rotate-180"><path stroke="#000" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <span class="font-mono text-xs font-bold text-black/60">04</span>
+            <div class="font-display font-black text-5xl lg:text-6xl mt-2 mb-1">0x70c2</div>
+            <div class="font-display font-bold uppercase text-sm tracking-wider">Deployed GenVM Address</div>
+            <p class="text-xs text-black/75 mt-2 leading-relaxed">Immutable intelligent contract active on GenLayer Studionet.</p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 3: OBSIDIAN DARK SECTION -->
+    <section class="relative py-24 sm:py-32 px-5 sm:px-8 lg:px-16 overflow-hidden">
+      
+      <!-- Video Backdrop: Rotating Cyber Sphere -->
+      <video preload="auto" loop muted playsinline autoplay class="absolute -right-20 -bottom-20 w-[600px] lg:w-[850px] opacity-40 mix-blend-screen pointer-events-none z-0">
+        <source src="https://video.nesa.ai/rotating.mp4" type="video/mp4"/>
+      </video>
+
+      <div class="relative z-10 max-w-screen-2xl mx-auto">
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-secondary-purple mb-6">
+            <svg class="w-3.5 h-3.5 text-secondary-purple" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <span>NON-DETERMINISTIC VERIFICATION</span>
+          </div>
+
+          <h2 class="font-display font-black text-4xl sm:text-6xl lg:text-7xl uppercase leading-[0.95] tracking-tight">
+            THE FIRST<br/>DECENTRALIZED<br/>DISCLOSURE ORACLE
+          </h2>
+
+          <!-- Technical Corner Card -->
+          <div class="relative mt-8 p-6 sm:p-8 bg-surface-dark/80 backdrop-blur-md rounded-2xl border border-white/10 max-w-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute top-0 left-0"><path stroke="#9A9A9A" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute top-0 right-0 rotate-90"><path stroke="#9A9A9A" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute bottom-0 left-0 -rotate-90"><path stroke="#9A9A9A" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute bottom-0 right-0 rotate-180"><path stroke="#9A9A9A" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+            <p class="text-sm sm:text-base text-text-light/90 leading-relaxed font-light">
+              Traditional smart contracts cannot parse natural-language READMEs or inspect Python code manifests. Corda connects non-deterministic web crawling with decentralized LLM comparative consensus across independent validator nodes.
+            </p>
+          </div>
+        </div>
+
+        <!-- Marquee of Audited Frameworks -->
+        <div class="mt-20 pt-10 border-t border-white/10">
+          <div class="flex items-center justify-between mb-8">
+            <span class="font-mono text-xs text-text-dark uppercase tracking-widest">Target Ecosystems & Repositories</span>
+            <span class="font-mono text-xs text-text-dark uppercase tracking-widest">Automated Disclosure Checks</span>
+          </div>
+
+          <div class="relative overflow-hidden py-4">
+            <div class="animate-marquee flex items-center gap-8">
+              <div class="px-6 py-3 rounded-full bg-surface-dark border border-white/10 font-mono text-sm font-semibold flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-secondary-purple"></span> CloudSwarm
+              </div>
+              <div class="px-6 py-3 rounded-full bg-surface-dark border border-white/10 font-mono text-sm font-semibold flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-accent-green"></span> LocalAgent
+              </div>
+              <div class="px-6 py-3 rounded-full bg-surface-dark border border-white/10 font-mono text-sm font-semibold flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-white/40"></span> LangChain
+              </div>
+              <div class="px-6 py-3 rounded-full bg-surface-dark border border-white/10 font-mono text-sm font-semibold flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-white/40"></span> Ollama
+              </div>
+              <div class="px-6 py-3 rounded-full bg-surface-dark border border-white/10 font-mono text-sm font-semibold flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-white/40"></span> AutoGPT
+              </div>
+              <div class="px-6 py-3 rounded-full bg-surface-dark border border-white/10 font-mono text-sm font-semibold flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-white/40"></span> CrewAI
+              </div>
+              <div class="px-6 py-3 rounded-full bg-surface-dark border border-white/10 font-mono text-sm font-semibold flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-white/40"></span> LlamaIndex
+              </div>
+              <div class="px-6 py-3 rounded-full bg-surface-dark border border-white/10 font-mono text-sm font-semibold flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-white/40"></span> vLLM
+              </div>
+
+              <!-- Duplicate for infinite loop -->
+              <div class="px-6 py-3 rounded-full bg-surface-dark border border-white/10 font-mono text-sm font-semibold flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-secondary-purple"></span> CloudSwarm
+              </div>
+              <div class="px-6 py-3 rounded-full bg-surface-dark border border-white/10 font-mono text-sm font-semibold flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-accent-green"></span> LocalAgent
+              </div>
+              <div class="px-6 py-3 rounded-full bg-surface-dark border border-white/10 font-mono text-sm font-semibold flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-white/40"></span> LangChain
+              </div>
+              <div class="px-6 py-3 rounded-full bg-surface-dark border border-white/10 font-mono text-sm font-semibold flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-white/40"></span> Ollama
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 4: ACID YELLOW CARD -->
+    <section id="architecture" class="relative z-10 px-3 sm:px-6 lg:px-10 py-12">
+      <div class="max-w-screen-2xl mx-auto rounded-[32px] sm:rounded-[48px] lg:rounded-[5.5rem] bg-thirtiary-yellow text-primary-black p-8 sm:p-14 lg:p-20 shadow-2xl overflow-hidden">
+        
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 pb-12 border-b border-black/15">
+          <div class="max-w-3xl">
+            <span class="font-mono text-xs font-bold uppercase tracking-widest text-black/70 mb-3 block">GENVM EXECUTION LAYER</span>
+            <h2 class="font-display font-black text-4xl sm:text-6xl lg:text-7xl uppercase leading-[0.95] tracking-tight">
+              BREAKTHROUGH<br/>INTELLIGENT CONTRACTS
+            </h2>
+          </div>
+          <button onclick="toggleModal('docs-modal', true)" class="nesa-pill-btn nesa-pill-btn-dark group relative inline-flex items-center rounded-full h-[52px] py-[6px] pl-[54px] pr-[28px] bg-primary-black text-white overflow-hidden cursor-pointer">
+            <div class="pill-circle absolute top-[5px] left-[5px] w-[40px] h-[40px] rounded-full bg-white flex items-center justify-center z-[1]">
+              <svg class="w-4 h-4 text-black" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <span class="pill-text relative z-[2] font-display font-bold uppercase text-xs lg:text-sm tracking-wider text-white transition-colors duration-300">
+              Technical Spec
+            </span>
+          </button>
+        </div>
+
+        <!-- Cross Section Video -->
+        <div class="relative my-12 rounded-3xl overflow-hidden bg-black/5 p-4 sm:p-8 flex items-center justify-center">
+          <video preload="auto" loop muted playsinline autoplay class="w-full max-w-4xl rounded-2xl mix-blend-multiply opacity-90">
+            <source src="https://video.nesa.ai/breaktrough_cross_section.mp4" type="video/mp4"/>
+          </video>
+        </div>
+
+        <!-- 4 Architectural Pillars -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-6">
+          
+          <div class="p-6 bg-black/5 rounded-2xl border border-black/10 flex flex-col justify-between">
+            <div>
+              <div class="w-7 h-7 rounded-lg bg-black text-white font-mono font-bold text-xs flex items-center justify-center mb-4">1</div>
+              <span class="font-mono text-[10px] font-bold uppercase tracking-widest text-black/60 block">SECURED BY</span>
+              <h3 class="font-display font-bold text-lg uppercase tracking-tight mt-1">Non-Deterministic Web Fetch</h3>
+            </div>
+            <p class="text-xs text-black/75 mt-4 font-mono">gl.nondet.web.get(url) retrieves live privacy policies and code manifests directly.</p>
+          </div>
+
+          <div class="p-6 bg-black/5 rounded-2xl border border-black/10 flex flex-col justify-between">
+            <div>
+              <div class="w-7 h-7 rounded-lg bg-black text-white font-mono font-bold text-xs flex items-center justify-center mb-4">2</div>
+              <span class="font-mono text-[10px] font-bold uppercase tracking-widest text-black/60 block">EVALUATED BY</span>
+              <h3 class="font-display font-bold text-lg uppercase tracking-tight mt-1">Comparative Principle Consensus</h3>
+            </div>
+            <p class="text-xs text-black/75 mt-4 font-mono">gl.eq_principle.prompt_comparative ensures independent semantic validation.</p>
+          </div>
+
+          <div class="p-6 bg-black/5 rounded-2xl border border-black/10 flex flex-col justify-between">
+            <div>
+              <div class="w-7 h-7 rounded-lg bg-black text-white font-mono font-bold text-xs flex items-center justify-center mb-4">3</div>
+              <span class="font-mono text-[10px] font-bold uppercase tracking-widest text-black/60 block">DETECTING</span>
+              <h3 class="font-display font-bold text-lg uppercase tracking-tight mt-1">Code Evidence & Telemetry</h3>
+            </div>
+            <p class="text-xs text-black/75 mt-4 font-mono">AST pattern matching for PostHog, Segment, and external tracking calls.</p>
+          </div>
+
+          <div class="p-6 bg-black/5 rounded-2xl border border-black/10 flex flex-col justify-between">
+            <div>
+              <div class="w-7 h-7 rounded-lg bg-black text-white font-mono font-bold text-xs flex items-center justify-center mb-4">4</div>
+              <span class="font-mono text-[10px] font-bold uppercase tracking-widest text-black/60 block">COMMITTED TO</span>
+              <h3 class="font-display font-bold text-lg uppercase tracking-tight mt-1">Immutable Report Storage</h3>
+            </div>
+            <p class="text-xs text-black/75 mt-4 font-mono">TreeMap[u256, str] permanently records tamper-evident auditor receipts.</p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 5: VERIFIED ON-CHAIN PROOFS SHOWCASE -->
+    <section id="evidence" class="relative py-24 px-5 sm:px-8 lg:px-16 max-w-screen-2xl mx-auto">
+      
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16 pb-8 border-b border-white/10">
+        <div>
+          <span class="font-mono text-xs text-secondary-purple uppercase tracking-widest block mb-2">EMPIRICAL PROOF ROOM</span>
+          <h2 class="font-display font-black text-3xl sm:text-5xl lg:text-6xl uppercase tracking-tight">
+            VERIFIED ON-CHAIN PROOFS
+          </h2>
+        </div>
+        <div class="text-xs font-mono text-text-dark text-right">
+          <div>CONTRACT: <span class="text-white font-bold">0x70c2...3e92</span></div>
+          <div>GENVM STATUS: <span class="text-accent-green font-bold">SUCCESS (RETURN)</span></div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Proof Cards -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- Case B: CloudSwarm (MISMATCH) -->
+        <div class="relative p-8 rounded-3xl bg-secondary-black border border-white/10 flex flex-col justify-between hover:border-red-500/40 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute top-0 left-0"><path stroke="#9A9A9A" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute top-0 right-0 rotate-90"><path stroke="#9A9A9A" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute bottom-0 left-0 -rotate-90"><path stroke="#9A9A9A" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute bottom-0 right-0 rotate-180"><path stroke="#9A9A9A" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 font-mono text-xs font-bold text-red-400">
+                DISCLOSURE_MISMATCH
+              </span>
+              <span class="font-mono text-xs text-text-dark">CASE B • AUDITED</span>
+            </div>
+
+            <h3 class="font-display font-bold text-2xl uppercase tracking-tight text-white mb-3">
+              CloudSwarm — Privacy Contradiction
+            </h3>
+
+            <!-- Claim vs Evidence -->
+            <div class="space-y-4 text-xs font-mono mb-6">
+              <div class="p-4 rounded-xl bg-white/5 border border-white/5">
+                <span class="text-text-dark block mb-1 uppercase font-bold">Public Privacy Claim:</span>
+                <span class="text-white">"Self-hosted. 100% private. No telemetry. Zero analytics, zero phone-home tracking."</span>
+              </div>
+              <div class="p-4 rounded-xl bg-red-950/20 border border-red-500/20">
+                <span class="text-red-400 block mb-1 uppercase font-bold">Detected Code Evidence:</span>
+                <span class="text-red-200">import posthog • posthog.capture('task_dispatched') configured to https://app.posthog.com</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transaction Footer -->
+          <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+            <span class="font-mono text-[11px] text-text-dark truncate max-w-[200px] sm:max-w-xs">TX: 0x5452...a099</span>
+            <a target="_blank" href="https://explorer-studio.genlayer.com/tx/0x5452df20d06d17850778e6a254fe9606944f0d8bb0da050faefe2fd33de0a099" class="font-mono text-xs font-bold text-secondary-purple hover:underline flex items-center gap-1">
+              Verify On Explorer ↗
+            </a>
+          </div>
+        </div>
+
+        <!-- Case A: LocalAgent (MATCH) -->
+        <div class="relative p-8 rounded-3xl bg-secondary-black border border-white/10 flex flex-col justify-between hover:border-accent-green/40 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute top-0 left-0"><path stroke="#9A9A9A" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute top-0 right-0 rotate-90"><path stroke="#9A9A9A" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute bottom-0 left-0 -rotate-90"><path stroke="#9A9A9A" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="absolute bottom-0 right-0 rotate-180"><path stroke="#9A9A9A" stroke-linejoin="round" d="M1 24V12a11 11 0 0 1 11-11h12"/></svg>
+
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3 py-1 rounded-full bg-accent-green/10 border border-accent-green/30 font-mono text-xs font-bold text-accent-green">
+                DISCLOSURE_MATCH
+              </span>
+              <span class="font-mono text-xs text-text-dark">CASE A • AUDITED</span>
+            </div>
+
+            <h3 class="font-display font-bold text-2xl uppercase tracking-tight text-white mb-3">
+              LocalAgent — Disclosure Substantiated
+            </h3>
+
+            <!-- Claim vs Evidence -->
+            <div class="space-y-4 text-xs font-mono mb-6">
+              <div class="p-4 rounded-xl bg-white/5 border border-white/5">
+                <span class="text-text-dark block mb-1 uppercase font-bold">Public Privacy Claim:</span>
+                <span class="text-white">"Self-hosted, offline-first execution. Telemetry is disabled by default."</span>
+              </div>
+              <div class="p-4 rounded-xl bg-emerald-950/20 border border-accent-green/20">
+                <span class="text-accent-green block mb-1 uppercase font-bold">Detected Code Evidence:</span>
+                <span class="text-emerald-200">Zero external telemetry imports. Clean local prompt runner only.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transaction Footer -->
+          <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+            <span class="font-mono text-[11px] text-text-dark truncate max-w-[200px] sm:max-w-xs">TX: 0xeb63...c018c</span>
+            <a target="_blank" href="https://explorer-studio.genlayer.com/tx/0xeb63270182d1999633cf71922261ff9e28d8411216019fa0f5e33fd7656c018c" class="font-mono text-xs font-bold text-secondary-purple hover:underline flex items-center gap-1">
+              Verify On Explorer ↗
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- VIEW 2: INTERACTIVE CONSOLE SUB-PAGE (Dedicated Proof Room Workstation)  -->
+  <!-- ========================================================================= -->
+  <div id="view-console" class="hidden min-h-screen pt-28 pb-20 px-5 sm:px-8 lg:px-14 max-w-5xl mx-auto">
+    
+    <!-- Console Breadcrumb / Back Bar -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10 pb-6 border-b border-white/10">
+      <button onclick="showView('marketing')" class="inline-flex items-center gap-2 text-sm font-mono font-medium text-text-dark hover:text-white transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        <span>Return to Overview</span>
+      </button>
+
+      <div class="flex items-center gap-4 text-xs font-mono">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+          <span class="w-2 h-2 rounded-full bg-accent-green"></span>
+          <span>Studionet (61999)</span>
+        </div>
+        <span class="text-text-dark hidden sm:inline">Contract: <strong class="text-white">0x70c2...3e92</strong></span>
+      </div>
+    </div>
+
+    <!-- Workstation Container -->
+    <div class="relative p-6 sm:p-10 rounded-3xl bg-secondary-black border border-white/10 shadow-2xl">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" class="absolute top-0 left-0"><path stroke="#8356E2" stroke-linejoin="round" d="M1 30V15a14 14 0 0 1 14-14h15"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" class="absolute top-0 right-0 rotate-90"><path stroke="#8356E2" stroke-linejoin="round" d="M1 30V15a14 14 0 0 1 14-14h15"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" class="absolute bottom-0 left-0 -rotate-90"><path stroke="#8356E2" stroke-linejoin="round" d="M1 30V15a14 14 0 0 1 14-14h15"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" class="absolute bottom-0 right-0 rotate-180"><path stroke="#8356E2" stroke-linejoin="round" d="M1 30V15a14 14 0 0 1 14-14h15"/></svg>
+
+      <!-- Workstation Header -->
+      <div class="mb-8">
+        <div class="flex items-center justify-between">
+          <span class="font-mono text-xs text-secondary-purple font-bold uppercase tracking-widest">Intelligent Contract Execution</span>
+          <span class="font-mono text-xs px-2.5 py-1 rounded bg-accent-green/10 text-accent-green font-bold border border-accent-green/20">GENVM: SUCCESS</span>
+        </div>
+        <h2 class="font-display font-black text-3xl sm:text-4xl uppercase tracking-tight text-white mt-2">
+          Corda Verification Console
+        </h2>
+        <p class="text-sm text-text-dark mt-2 font-light">
+          Trigger multi-validator non-deterministic web retrieval and comparative consensus.
+        </p>
+      </div>
+
+      <!-- Presets Bar -->
+      <div class="mb-8 p-4 rounded-2xl bg-surface-dark border border-white/5">
+        <span class="font-mono text-xs text-text-dark uppercase tracking-wider block mb-3 font-semibold">Load Test Presets:</span>
+        <div class="flex flex-wrap gap-3">
+          <button onclick="loadPreset('case_b')" class="px-4 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-xs font-mono font-semibold text-red-300 transition-colors flex items-center gap-2">
+            <span>🚨 Case B: CloudSwarm (Mismatch)</span>
+          </button>
+          <button onclick="loadPreset('case_a')" class="px-4 py-2 rounded-xl bg-accent-green/10 hover:bg-accent-green/20 border border-accent-green/30 text-xs font-mono font-semibold text-accent-green transition-colors flex items-center gap-2">
+            <span>✅ Case A: LocalAgent (Match)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Input Form -->
+      <form id="audit-form" onsubmit="runAudit(event)" class="space-y-6">
+        <div>
+          <label class="block font-mono text-xs uppercase tracking-wider text-text-dark mb-2 font-semibold">
+            Repository Code Target (URL or File)
+          </label>
+          <input type="text" id="repo_url" required
+            class="w-full px-4 py-3.5 rounded-xl bg-surface-dark border border-white/10 text-white font-mono text-xs sm:text-sm focus:outline-none focus:border-secondary-purple transition-colors"
+            placeholder="e.g. https://gist.githubusercontent.com/.../case_b_code.py"/>
+        </div>
+
+        <div>
+          <label class="block font-mono text-xs uppercase tracking-wider text-text-dark mb-2 font-semibold">
+            Public Privacy Policy / Documentation Target (URL or File)
+          </label>
+          <input type="text" id="privacy_url" required
+            class="w-full px-4 py-3.5 rounded-xl bg-surface-dark border border-white/10 text-white font-mono text-xs sm:text-sm focus:outline-none focus:border-secondary-purple transition-colors"
+            placeholder="e.g. https://gist.githubusercontent.com/.../case_b_privacy.md"/>
+        </div>
+
+        <!-- Action Button -->
+        <div class="pt-4 flex items-center justify-between flex-wrap gap-4">
+          <button type="submit" id="submit-btn" class="nesa-pill-btn group relative inline-flex items-center rounded-full h-[52px] py-[6px] pl-[54px] pr-[30px] bg-white text-black overflow-hidden cursor-pointer shadow-xl">
+            <div class="pill-circle absolute top-[5px] left-[5px] w-[40px] h-[40px] rounded-full bg-secondary-purple flex items-center justify-center z-[1]">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+              </svg>
+            </div>
+            <span class="pill-text relative z-[2] font-display font-bold uppercase text-xs lg:text-sm tracking-wider text-black group-hover:!text-white transition-colors duration-300">
+              Execute Consensus Audit
+            </span>
+          </button>
+
+          <span class="font-mono text-xs text-text-dark">Comparative Principle: The 3 Defensible Outcomes</span>
+        </div>
+      </form>
+
+      <!-- Multi-Validator Consensus Stepper -->
+      <div id="consensus-stepper" class="hidden mt-8 pt-8 border-t border-white/10">
+        <div class="flex items-center justify-between text-xs font-mono mb-4 text-text-dark">
+          <span class="font-bold uppercase text-secondary-purple">Live Multi-Validator Lifecycle</span>
+          <span id="stepper-state">PROPOSING</span>
+        </div>
+        <div class="grid grid-cols-4 gap-2 text-center font-mono text-[10px]">
+          <div id="step-1" class="py-2 px-1 rounded bg-secondary-purple text-white font-bold transition-all">1. PROPOSE</div>
+          <div id="step-2" class="py-2 px-1 rounded bg-white/5 text-text-dark transition-all">2. COMMIT</div>
+          <div id="step-3" class="py-2 px-1 rounded bg-white/5 text-text-dark transition-all">3. REVEAL</div>
+          <div id="step-4" class="py-2 px-1 rounded bg-white/5 text-text-dark transition-all">4. FINALIZE</div>
+        </div>
+      </div>
+
+      <!-- Result Container -->
+      <div id="result-box" class="hidden mt-8 pt-8 border-t border-white/10 space-y-6">
+        
+        <!-- Verdict Banner -->
+        <div id="verdict-banner" class="p-6 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <span class="font-mono text-xs uppercase tracking-widest text-text-dark block mb-1">Finalized Consensus Result</span>
+            <div id="verdict-title" class="font-display font-black text-2xl sm:text-3xl tracking-tight uppercase">
+              DISCLOSURE_MISMATCH
+            </div>
+          </div>
+          <div id="consensus-badge" class="px-4 py-2 rounded-xl text-xs font-mono font-bold">
+            CONSENSUS: ACCEPTED
+          </div>
+        </div>
+
+        <!-- Claim vs Evidence Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+          <div class="p-5 rounded-xl bg-surface-dark border border-white/5">
+            <span class="text-text-dark block uppercase font-bold mb-2">Public Documentation Claim:</span>
+            <div id="res-claim" class="text-white leading-relaxed"></div>
+          </div>
+          <div class="p-5 rounded-xl bg-surface-dark border border-white/5">
+            <span class="text-text-dark block uppercase font-bold mb-2">Public Code Evidence:</span>
+            <div id="res-evidence" class="text-white leading-relaxed"></div>
+          </div>
+        </div>
+
+        <!-- Validator Rationale -->
+        <div class="p-5 rounded-xl bg-surface-dark border border-white/5 font-mono text-xs">
+          <span class="text-text-dark block uppercase font-bold mb-2">Validator Consensus Rationale:</span>
+          <p id="res-explanation" class="text-text-light/90 leading-relaxed"></p>
+        </div>
+
+        <!-- On-Chain Receipt Footer -->
+        <div class="p-4 rounded-xl bg-black/40 border border-white/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs font-mono">
+          <div class="truncate max-w-md text-text-dark">
+            TX: <span id="res-tx" class="text-white font-bold"></span>
+          </div>
+          <a id="res-explorer" target="_blank" href="#" class="px-4 py-2 rounded-lg bg-secondary-purple text-white font-bold hover:bg-secondary-purple/80 transition-colors">
+            Inspect on Studionet Explorer ↗
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- TECHNICAL DOCUMENTATION MODAL                                             -->
+  <!-- ========================================================================= -->
+  <div id="docs-modal" class="fixed inset-0 z-[250] bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 sm:p-8">
+    <div class="relative w-full max-w-3xl max-h-[85vh] bg-surface-dark border border-white/10 rounded-3xl p-6 sm:p-10 overflow-y-auto text-text-light">
+      <div class="flex items-center justify-between pb-6 border-b border-white/10 mb-6">
+        <div>
+          <span class="font-mono text-xs text-secondary-purple uppercase tracking-widest">Protocol Specification</span>
+          <h3 class="font-display font-bold text-2xl uppercase tracking-tight text-white mt-1">
+            Corda Intelligent Contract Architecture
+          </h3>
+        </div>
+        <button onclick="toggleModal('docs-modal', false)" class="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white font-bold">✕</button>
+      </div>
+
+      <div class="space-y-6 text-sm font-light text-text-light/90 leading-relaxed font-sans">
+        <div>
+          <h4 class="font-display font-bold text-base uppercase text-white mb-2">1. The Defensible Outcomes Principle</h4>
+          <p>
+            Corda does not issue legal certifications and does not claim to prove absolute "zero telemetry." It evaluates whether public privacy marketing is defensibly consistent with public code:
+          </p>
+          <ul class="list-disc list-inside mt-2 space-y-1 font-mono text-xs text-text-dark">
+            <li><strong class="text-accent-green">DISCLOSURE_MATCH:</strong> Public code evidence is consistent with stated documentation.</li>
+            <li><strong class="text-red-400">DISCLOSURE_MISMATCH:</strong> Code evidence contradicts marketing (e.g. claims no tracking, but imports PostHog).</li>
+            <li><strong class="text-amber-400">INSUFFICIENT_EVIDENCE:</strong> Evidence is missing, inconclusive, or inaccessible.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-display font-bold text-base uppercase text-white mb-2">2. Non-Deterministic Consensus in GenVM</h4>
+          <p>
+            Standard smart contracts cannot execute external HTTP requests or LLM prompts deterministically. GenLayer solves this by isolating non-deterministic execution in <code class="font-mono text-xs text-secondary-purple">gl.nondet</code> and reconciling outputs across validators using comparative consensus:
+          </p>
+          <div class="mt-2 p-4 rounded-xl bg-black/60 font-mono text-xs text-purple-200">
+            result = gl.eq_principle.prompt_comparative(<br/>
+            &nbsp;&nbsp;evaluate_claim,<br/>
+            &nbsp;&nbsp;principle="The final verdict must be exactly one of: DISCLOSURE_MATCH, DISCLOSURE_MISMATCH, INSUFFICIENT_EVIDENCE."<br/>
+            )
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-display font-bold text-base uppercase text-white mb-2">3. Studionet On-Chain Receipts</h4>
+          <p class="font-mono text-xs text-text-dark">
+            Contract Address: <span class="text-white font-bold">0x70c2F7491A2CC7f81AC05ca964a059c05feD3e92</span><br/>
+            Deployment TX: <span class="text-white">0xad4a52ec806c702aade32fcece1816b99c2dd0ad1625750ea70c803a5ca0690a</span><br/>
+            Network: GenLayer Studionet (Chain ID 61999)
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- FLOATING SCROLL-PROGRESS & BACK-TO-TOP WIDGET (Nesa signature)           -->
+  <!-- ========================================================================= -->
+  <div id="scroll-hud" class="fixed bottom-8 right-8 z-50 cursor-pointer group" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">
+    <div class="relative w-12 h-12 rounded-full bg-surface-dark border border-white/10 flex items-center justify-center shadow-2xl backdrop-blur-md group-hover:border-secondary-purple transition-all">
+      <svg class="w-12 h-12 absolute inset-0 -rotate-90" viewBox="0 0 48 48">
+        <circle cx="24" cy="24" r="20" stroke="rgba(255,255,255,0.1)" stroke-width="2" fill="none"/>
+        <circle id="scroll-circle" cx="24" cy="24" r="20" stroke="#8356E2" stroke-width="2.5" fill="none" stroke-dasharray="125.66" stroke-dashoffset="125.66" class="transition-all duration-150"/>
+      </svg>
+      <svg class="w-4 h-4 text-white group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- FOOTER (Wireframe HUD with Chamfered Style)                               -->
+  <!-- ========================================================================= -->
+  <footer class="border-t border-white/10 bg-primary-black py-16 px-5 sm:px-8 lg:px-16 text-text-dark text-xs font-mono">
+    <div class="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center p-1 overflow-hidden">
+          <img src="/assets/branding/logo.svg" alt="Corda Logo" class="w-full h-full object-contain"/>
+        </div>
+        <div>
+          <span class="text-white font-display font-bold uppercase tracking-wider text-sm block">CORDA</span>
+          <span class="text-[10px] text-text-dark tracking-widest uppercase">Privacy Claims vs. Public Code</span>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-8 text-xs">
+        <a href="#architecture" class="hover:text-white transition-colors">Architecture</a>
+        <a href="#evidence" class="hover:text-white transition-colors">Verified Proofs</a>
+        <button onclick="toggleModal('docs-modal', true)" class="hover:text-white transition-colors">Docs</button>
+        <button onclick="showView('console')" class="hover:text-white transition-colors">Console</button>
+        <a target="_blank" href="https://studio.genlayer.com" class="hover:text-white transition-colors">GenLayer Studio ↗</a>
+      </div>
+
+      <div class="text-right">
+        <div>GenLayer Agent Tank Hackathon</div>
+        <div class="text-[10px] text-white/50 mt-1">Contract: 0x70c2...3e92 • Studionet</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT LOGIC                                                          -->
+  <!-- ========================================================================= -->
+  <script>
+    let currentView = 'marketing';
+
+    function showView(view) {
+      currentView = view;
+      const mkt = document.getElementById('view-marketing');
+      const con = document.getElementById('view-console');
+      const btn = document.getElementById('nav-console-btn');
+
+      if (view === 'console') {
+        mkt.classList.add('hidden');
+        con.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        history.pushState({ view: 'console' }, 'Console', '/console');
+        if (btn) btn.classList.add('opacity-0', 'pointer-events-none');
+      } else {
+        con.classList.add('hidden');
+        mkt.classList.remove('hidden');
+        history.pushState({ view: 'marketing' }, 'Corda', '/');
+        if (btn) btn.classList.remove('opacity-0', 'pointer-events-none');
+      }
+    }
+
+    function toggleModal(id, show) {
+      const el = document.getElementById(id);
+      if (show) {
+        el.classList.remove('hidden');
+      } else {
+        el.classList.add('hidden');
+      }
+    }
+
+    function toggleCurtain(open) {
+      const c = document.getElementById('curtain-menu');
+      if (open) {
+        c.classList.remove('-translate-y-full');
+      } else {
+        c.classList.add('-translate-y-full');
+      }
+    }
+
+    window.addEventListener('scroll', () => {
+      const circle = document.getElementById('scroll-circle');
+      if (!circle) return;
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = h > 0 ? window.scrollY / h : 0;
+      const offset = 125.66 - (pct * 125.66);
+      circle.style.strokeDashoffset = Math.max(0, offset);
+    });
+
+    const PRESETS = {
+      case_b: {
+        repo: 'https://gist.githubusercontent.com/Charles-ace/9cd83066dca0a7d5081f3a1eae4763a3/raw/case_b_code.py',
+        privacy: 'https://gist.githubusercontent.com/Charles-ace/9cd83066dca0a7d5081f3a1eae4763a3/raw/case_b_privacy.md'
+      },
+      case_a: {
+        repo: 'https://gist.githubusercontent.com/Charles-ace/3da2ae80f931867f18df331549a287bf/raw/case_a_code.py',
+        privacy: 'https://gist.githubusercontent.com/Charles-ace/3da2ae80f931867f18df331549a287bf/raw/case_a_privacy.md'
+      }
+    };
+
+    function loadPreset(key) {
+      const p = PRESETS[key];
+      if (p) {
+        document.getElementById('repo_url').value = p.repo;
+        document.getElementById('privacy_url').value = p.privacy;
+      }
+    }
+
+    async function runAudit(e) {
+      e.preventDefault();
+      const repoUrl = document.getElementById('repo_url').value.trim();
+      const privacyUrl = document.getElementById('privacy_url').value.trim();
+      if (!repoUrl || !privacyUrl) return;
+
+      const stepper = document.getElementById('consensus-stepper');
+      const stepState = document.getElementById('stepper-state');
+      const resultBox = document.getElementById('result-box');
+      const submitBtn = document.getElementById('submit-btn');
+
+      stepper.classList.remove('hidden');
+      resultBox.classList.add('hidden');
+      submitBtn.disabled = true;
+
+      const steps = [
+        { name: '1. PROPOSING', id: 'step-1' },
+        { name: '2. COMMITTING', id: 'step-2' },
+        { name: '3. REVEALING', id: 'step-3' },
+        { name: '4. FINALIZED', id: 'step-4' }
+      ];
+
+      for (let i = 0; i < steps.length; i++) {
+        stepState.textContent = steps[i].name;
+        document.getElementById(steps[i].id).className = 'py-2 px-1 rounded bg-secondary-purple text-white font-bold transition-all';
+        await new Promise(r => setTimeout(r, 450));
+      }
+
+      try {
+        const resp = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ repo_url: repoUrl, privacy_url: privacyUrl })
+        });
+        const data = await resp.json();
+
+        const verdictTitle = document.getElementById('verdict-title');
+        const verdictBanner = document.getElementById('verdict-banner');
+        const resClaim = document.getElementById('res-claim');
+        const resEvidence = document.getElementById('res-evidence');
+        const resExplanation = document.getElementById('res-explanation');
+        const resTx = document.getElementById('res-tx');
+        const resExplorer = document.getElementById('res-explorer');
+        const consensusBadge = document.getElementById('consensus-badge');
+
+        const verdict = data.verdict || 'DISCLOSURE_MISMATCH';
+        verdictTitle.textContent = verdict;
+
+        if (verdict === 'DISCLOSURE_MISMATCH') {
+          verdictBanner.className = 'p-6 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-red-500/10 border border-red-500/30 text-red-300';
+          consensusBadge.className = 'px-4 py-2 rounded-xl text-xs font-mono font-bold bg-red-500/20 text-red-300 border border-red-500/40';
+        } else if (verdict === 'DISCLOSURE_MATCH') {
+          verdictBanner.className = 'p-6 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-accent-green/10 border border-accent-green/30 text-accent-green';
+          consensusBadge.className = 'px-4 py-2 rounded-xl text-xs font-mono font-bold bg-accent-green/20 text-accent-green border border-accent-green/40';
+        } else {
+          verdictBanner.className = 'p-6 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-amber-500/10 border border-amber-500/30 text-amber-300';
+          consensusBadge.className = 'px-4 py-2 rounded-xl text-xs font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40';
+        }
+
+        resClaim.textContent = data.claim || '—';
+        resEvidence.textContent = data.evidence || '—';
+        resExplanation.textContent = data.explanation || '—';
+        resTx.textContent = data.tx_hash || '—';
+        resExplorer.href = data.explorer_url || '#';
+
+        resultBox.classList.remove('hidden');
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (err) {
+        alert('Error executing analysis: ' + err.message);
+      } finally {
+        submitBtn.disabled = false;
+      }
+    }
+
+    window.addEventListener('popstate', (e) => {
+      if (location.pathname === '/console' || location.hash === '#console') {
+        showView('console');
+      } else {
+        showView('marketing');
+      }
+    });
+
+    if (window.location.pathname === '/console' || window.location.hash === '#console') {
+      showView('console');
+    }
+  </script>
+</body>
+</html>
