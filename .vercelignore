@@ -1,0 +1,10 @@
+.cdp_profile
+.venv
+node_modules
+.git
+.skills_backup
+.system_generated
+*.log
+*.pyc
+__pycache__
+Corda/remotion
