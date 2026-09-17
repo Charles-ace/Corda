@@ -46,6 +46,14 @@ if (fs.existsSync(FIXTURES_DIR)) {
   console.log(`✓ Bundled ${files.length} test fixtures into dist/fixtures/`);
 }
 
+// 4. Copy frontend assets (branding, video, icons) to dist/assets
+const srcAssets = path.join(FRONTEND_DIR, 'assets');
+const distAssets = path.join(DIST_DIR, 'assets');
+if (fs.existsSync(srcAssets)) {
+  fs.cpSync(srcAssets, distAssets, { recursive: true });
+  console.log(`✓ Bundled branding, favicons, and demo video into dist/assets/`);
+}
+
 // 4. Verify Intelligent Contract
 const contractPath = path.join(CORDA_DIR, 'contracts', 'Corda.py');
 if (fs.existsSync(contractPath)) {
